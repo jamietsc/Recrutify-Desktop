@@ -38,10 +38,6 @@ def newMultipleChoice():
 
 
 
-
-
-
-
 main = Tk()
 main.title("Recutify")
 main.state('zoomed')
