@@ -1,7 +1,7 @@
 import tkinter
 from tkinter import *
 
-place_var = 0
+multiple_choice_number = 1
 v = int
 
 def newMultipleChoice():
@@ -36,9 +36,28 @@ def newMultipleChoice():
     antwort_4_entry.place(x=600, y = 40 * i)
     i += 1
 
+    Text = str(frage_entry.get())
+    Antwort_1 = str(antwort_1_entry.get())
+    Antwort_2 = str(antwort_2_entry.get())
+    Antwort_3 = str(antwort_3_entry.get())
+    Antwort_4 = str(antwort_4_entry.get())
+
+    if(v == 1):
+        Richtig = Antwort_1
+    elif(v == 2):
+        Richtig = Antwort_2
+    elif(v == 3):
+        Richtig = Antwort_3
+    elif(v == 4):
+        Richtig = Antwort_4
+    else:
+        Richtig = "Leer"
+
+    multiple_choice_array = [[Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig]]
+
 
 def datenbankEintrag():
-    
+
 
 
 
