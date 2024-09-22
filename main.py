@@ -1,11 +1,16 @@
 import tkinter
 from tkinter import *
+from tkinter import ttk
 import sqlite3
 
 multiple_choice_number = 1
+i = 1
 
+def trennlinie():
+    seperator = ttk.Separator(main, orient=HORIZONTAL)
+    seperator.place(x=0, y=40*i, width=1920, height=40)
 def newMultipleChoice():
-    i = 1
+    global i
     frage_label = tkinter.Label(main, text="Frage:")
     frage_label.place(x=500, y=40 * i)
     frage_entry = tkinter.Entry(relief=RIDGE, width=100)
@@ -68,6 +73,7 @@ def newMultipleChoice():
 
         # Daten in die Datenbank einfügen
         datenbankEintrag(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig)
+        fertig_button.destroy()
 
     # "Fertig"-Button erstellen und save_data als command übergeben
     fertig_button = tkinter.Button(main, text="Fertig", command=save_data)
@@ -132,6 +138,8 @@ bausteinemenu = Menu()
 menu.add_cascade(label="Bausteine", menu=bausteinemenu)
 bausteinemenu.add_command(label="Multiple Choice", command=newMultipleChoice)
 bausteinemenu.add_command(label="")
+bausteinemenu.add_separator()
+bausteinemenu.add_command(label="Trennlinie", command=trennlinie)
 
 helpmenu = Menu()
 menu.add_cascade(label="Hilfe", menu=helpmenu)
