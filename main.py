@@ -7,10 +7,15 @@ multiple_choice_number = 1
 i = 1
 
 def trennlinie():
+    global i
     seperator = ttk.Separator(main, orient=HORIZONTAL)
     seperator.place(x=0, y=40*i, width=1920, height=40)
+    i += 1
+
 def newMultipleChoice():
+    v = IntVar()  # Variable für die Radiobuttons
     global i
+
     frage_label = tkinter.Label(main, text="Frage:")
     frage_label.place(x=500, y=40 * i)
     frage_entry = tkinter.Entry(relief=RIDGE, width=100)
@@ -122,7 +127,7 @@ main.state('zoomed')
 main.resizable(False, False)
 
 # Variablen müssen nach dem Erstellen des tkinter-Hauptfensters initialisiert werden
-v = IntVar()  # Variable für die Radiobuttons
+
 
 menu = Menu(main)
 main.config(menu=menu)
