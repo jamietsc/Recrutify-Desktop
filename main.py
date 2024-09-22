@@ -56,7 +56,7 @@ def newMultipleChoice():
     multiple_choice_array = [[Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig]]
 
 
-def datenbankEintrag():
+#def datenbankEintrag():
 
 
 
@@ -83,7 +83,7 @@ bausteinemenu.add_command(label="")
 
 helpmenu = Menu()
 menu.add_cascade(label="Hilfe", menu=helpmenu)
-helpmenu.add_command(label="Fertigstellen", command=datenbankEintrag)
+helpmenu.add_command(label="Fertigstellen")
 helpmenu.add_command(label="Bausteine")
 
 main.mainloop()
