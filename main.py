@@ -5,6 +5,7 @@ import sqlite3
 
 multiple_choice_number = 1
 i = 1
+multiple_choice_array = [[]]
 
 def trennlinie():
     seperator = ttk.Separator(main, orient=HORIZONTAL)
@@ -73,7 +74,13 @@ def newMultipleChoice():
 
         # Daten in die Datenbank einfügen
         datenbankEintrag(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig)
+
+        #Daten in ein Array einfügen, um dieses am Ende durchzugehen
+        multiple_choice_array.append([Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig])
+        print(multiple_choice_array)
         fertig_button.destroy()
+
+
 
     # "Fertig"-Button erstellen und save_data als command übergeben
     fertig_button = tkinter.Button(main, text="Fertig", command=save_data)
@@ -143,7 +150,7 @@ bausteinemenu.add_command(label="Trennlinie", command=trennlinie)
 
 helpmenu = Menu()
 menu.add_cascade(label="Hilfe", menu=helpmenu)
-helpmenu.add_command(label="Fertigstellen")
-helpmenu.add_command(label="Bausteine")
+helpmenu.add_command(label="Fertigstellen (in Arbeit)")
+helpmenu.add_command(label="Bausteine (in Arbeit)")
 
 main.mainloop()
