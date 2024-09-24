@@ -18,6 +18,8 @@ def trennlinie():
     seperator.place(x=0, y=40 * i, width=1920, height=40)
     i += 1
 
+def exit():
+    main.destroy()
 
 def newMultipleChoice():
     global i, multiple_choice_array, multiple_choice_number, frage_entry, antwort_1_entry, antwort_2_entry, antwort_3_entry, antwort_4_entry
@@ -167,6 +169,8 @@ menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Neue Datei")
 filemenu.add_command(label="Speichern")
 filemenu.add_command(label="Fertigstellen", command=datenbankEintrag)
+filemenu.add_separator()
+filemenu.add_command(label="Beenden", command=exit)
 
 bausteinemenu = Menu()
 menu.add_cascade(label="Bausteine", menu=bausteinemenu)
