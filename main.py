@@ -1,4 +1,5 @@
 import tkinter
+import tkinter.dialog
 from tkinter import *
 from tkinter import ttk
 import sqlite3
@@ -7,7 +8,7 @@ multiple_choice_number = 0
 i = 1
 multiple_choice_array = [[]]
 entry_array = [[]]
-
+v_list = []
 frage_entry = 0
 
 
@@ -26,10 +27,15 @@ def newMultipleChoice():
 
     if(multiple_choice_number > 0):
         Text = frage_entry.get()
+        frage_entry.config(state=tkinter.DISABLED)
         Antwort_1 = antwort_1_entry.get()
+        antwort_1_entry.config(state=tkinter.DISABLED)
         Antwort_2 = antwort_2_entry.get()
+        antwort_2_entry.config(state=tkinter.DISABLED)
         Antwort_3 = antwort_3_entry.get()
+        antwort_3_entry.config(state=tkinter.DISABLED)
         Antwort_4 = antwort_4_entry.get()
+        antwort_4_entry.config(state=tkinter.DISABLED)
 
         # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
         if v.get() == 1:
