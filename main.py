@@ -158,12 +158,15 @@ def arrayAusgeben():
 
 # GUI-Setup
 main = Tk()
-main.title("Recutify")
+main.title("Recrutify")
 main.state('zoomed')
 main.resizable(False, False)
 
 # Variablen müssen nach dem Erstellen des tkinter-Hauptfensters initialisiert werden
-v = IntVar()  # Variable für die Radiobuttons
+a = IntVar()  # Variable für die Radiobuttons
+b = IntVar()
+c = IntVar()
+d = IntVar()
 multiple_choice_array.clear()
 
 menu = Menu(main)
@@ -180,7 +183,7 @@ filemenu.add_command(label="Beenden", command=exit)
 
 bausteinemenu = Menu()
 menu.add_cascade(label="Bausteine", menu=bausteinemenu)
-bausteinemenu.add_command(label="Multiple Choice", command=newMultipleChoice)
+bausteinemenu.add_command(label="Single Choice", command=newMultipleChoice)
 bausteinemenu.add_separator()
 bausteinemenu.add_command(label="Trennlinie", command=trennlinie)
 
