@@ -163,10 +163,8 @@ main.state('zoomed')
 main.resizable(False, False)
 
 # Variablen müssen nach dem Erstellen des tkinter-Hauptfensters initialisiert werden
-a = IntVar()  # Variable für die Radiobuttons
-b = IntVar()
-c = IntVar()
-d = IntVar()
+v = IntVar()  # Variable für die Radiobuttons
+
 multiple_choice_array.clear()
 
 menu = Menu(main)
