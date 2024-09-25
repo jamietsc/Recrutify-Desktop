@@ -1,27 +1,65 @@
 import tkinter
+import tkinter.dialog
 from tkinter import *
 from tkinter import ttk
 import sqlite3
 
-multiple_choice_number = 1
+multiple_choice_number = 0
 i = 1
+multiple_choice_array = [[]]
+entry_array = [[]]
+v_list = []
+frage_entry = 0
+
+
 
 def trennlinie():
     global i
     seperator = ttk.Separator(main, orient=HORIZONTAL)
-    seperator.place(x=0, y=40*i, width=1920, height=40)
+    seperator.place(x=0, y=40 * i, width=1920, height=40)
     i += 1
 
-def newMultipleChoice():
-    v = IntVar()  # Variable für die Radiobuttons
-    global i
+def exit():
+    main.destroy()
 
-    frage_label = tkinter.Label(main, text="Frage:")
+def newMultipleChoice():
+    global i, multiple_choice_array, multiple_choice_number, frage_entry, antwort_1_entry, antwort_2_entry, antwort_3_entry, antwort_4_entry
+
+    if(multiple_choice_number > 0):
+        Text = frage_entry.get()
+        frage_entry.config(state=tkinter.DISABLED)
+        Antwort_1 = antwort_1_entry.get()
+        antwort_1_entry.config(state=tkinter.DISABLED)
+        Antwort_2 = antwort_2_entry.get()
+        antwort_2_entry.config(state=tkinter.DISABLED)
+        Antwort_3 = antwort_3_entry.get()
+        antwort_3_entry.config(state=tkinter.DISABLED)
+        Antwort_4 = antwort_4_entry.get()
+        antwort_4_entry.config(state=tkinter.DISABLED)
+
+        # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
+        if v.get() == 1:
+            Richtig = Antwort_1
+        elif v.get() == 2:
+            Richtig = Antwort_2
+        elif v.get() == 3:
+            Richtig = Antwort_3
+        elif v.get() == 4:
+            Richtig = Antwort_4
+        else:
+            Richtig = "Keine Auswahl"
+
+        multiple_choice_array.append([Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig])
+
+
+    # Label und Eingabefeld für die Frage
+    frage_label = tkinter.Label(main, text=f"Frage {multiple_choice_number + 1}:")
     frage_label.place(x=500, y=40 * i)
     frage_entry = tkinter.Entry(relief=RIDGE, width=100)
     frage_entry.place(x=600, y=40 * i)
     i += 1
 
+    # Radiobutton und Eingabefelder für Antworten
     antwort_1_radiobutton = tkinter.Radiobutton(main, text="Antwort 1", variable=v, value=1)
     antwort_1_radiobutton.place(x=500, y=40 * i)
     antwort_1_entry = tkinter.Entry(relief=RIDGE, width=100)
@@ -46,45 +84,32 @@ def newMultipleChoice():
     antwort_4_entry.place(x=600, y=40 * i)
     i += 1
 
-    def save_data():
-        # Hier werden die Daten erst beim Klicken auf den Button gelesen
-        Text = frage_entry.get()
-        Antwort_1 = antwort_1_entry.get()
-        Antwort_2 = antwort_2_entry.get()
-        Antwort_3 = antwort_3_entry.get()
-        Antwort_4 = antwort_4_entry.get()
+    multiple_choice_number += 1
 
-        # Prüfen, ob die Daten korrekt abgerufen werden
-        print("Frage:", Text)
-        print("Antwort 1:", Antwort_1)
-        print("Antwort 2:", Antwort_2)
-        print("Antwort 3:", Antwort_3)
-        print("Antwort 4:", Antwort_4)
-        print("Richtige Antwort:", v.get())
 
-        # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
-        if v.get() == 1:
-            Richtig = Antwort_1
-        elif v.get() == 2:
-            Richtig = Antwort_2
-        elif v.get() == 3:
-            Richtig = Antwort_3
-        elif v.get() == 4:
-            Richtig = Antwort_4
-        else:
-            Richtig = "Leer"
+def datenbankEintrag():
+    global multiple_choice_array
 
-        print("Richtig:", Richtig)
+    Text = frage_entry.get()
+    Antwort_1 = antwort_1_entry.get()
+    Antwort_2 = antwort_2_entry.get()
+    Antwort_3 = antwort_3_entry.get()
+    Antwort_4 = antwort_4_entry.get()
 
-        # Daten in die Datenbank einfügen
-        datenbankEintrag(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig)
-        fertig_button.destroy()
+    # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
+    if v.get() == 1:
+        Richtig = Antwort_1
+    elif v.get() == 2:
+        Richtig = Antwort_2
+    elif v.get() == 3:
+        Richtig = Antwort_3
+    elif v.get() == 4:
+        Richtig = Antwort_4
+    else:
+        Richtig = "Keine Auswahl"
 
-    # "Fertig"-Button erstellen und save_data als command übergeben
-    fertig_button = tkinter.Button(main, text="Fertig", command=save_data)
-    fertig_button.place(x=500, y=40 * i)
+    multiple_choice_array.append([Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig])
 
-def datenbankEintrag(frage, antwort_1, antwort_2, antwort_3, antwort_4, richtig):
     # Verbindung zur SQLite-Datenbank herstellen
     conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
@@ -103,22 +128,33 @@ def datenbankEintrag(frage, antwort_1, antwort_2, antwort_3, antwort_4, richtig)
                     )''')
 
     # SQL-Befehl zum Einfügen der Daten
-    sql = '''INSERT INTO Fragen (Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig, TID)
-             VALUES (?, ?, ?, ?, ?, ?, ?)'''
+    sql = '''INSERT INTO Fragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig, TID) 
+             VALUES (?,?,?,?,?,?,?)'''
+    tid = 1
 
-    # Beispiel für TID, muss möglicherweise dynamisch oder aus einem anderen Input kommen
-    tid = 1  # Dies sollte an deine Test-ID angepasst werden
-
-    # Daten einfügen
-    try:
-        cursor.execute(sql, (frage, antwort_1, antwort_2, antwort_3, antwort_4, richtig, tid))
-        print("Daten erfolgreich eingefügt")
-    except sqlite3.Error as e:
-        print(f"Fehler beim Einfügen der Daten: {e}")
+    # Daten in die Datenbank einfügen
+    for i in range(0, len(multiple_choice_array)):
+        try:
+            # Überprüfe, ob die Daten korrekt sind
+            print(f"Füge folgende Daten ein: {multiple_choice_array[i]}")
+            cursor.execute(sql, (multiple_choice_array[i][0], multiple_choice_array[i][1], multiple_choice_array[i][2], multiple_choice_array[i][3], multiple_choice_array[i][4], multiple_choice_array[i][5], tid))
+            print("Daten erfolgreich eingefügt")
+        except sqlite3.Error as e:
+            print(f"Fehler beim Einfügen der Daten: {e}")
 
     # Änderungen speichern und Verbindung schließen
     conn.commit()
     conn.close()
+
+    print("Fragen und Antworten wurden in die Datenbank übertragen.")
+
+def arrayLänge():
+    print(len(multiple_choice_array))
+
+def arrayAusgeben():
+    for i in range(0, len(multiple_choice_array)):
+        print(multiple_choice_array[i][0], multiple_choice_array[i][1], multiple_choice_array[i][2], multiple_choice_array[i][3], multiple_choice_array[i][4], multiple_choice_array[i][5])
+
 
 # GUI-Setup
 main = Tk()
@@ -127,7 +163,8 @@ main.state('zoomed')
 main.resizable(False, False)
 
 # Variablen müssen nach dem Erstellen des tkinter-Hauptfensters initialisiert werden
-
+v = IntVar()  # Variable für die Radiobuttons
+multiple_choice_array.clear()
 
 menu = Menu(main)
 main.config(menu=menu)
@@ -137,18 +174,25 @@ filemenu = Menu()
 menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Neue Datei")
 filemenu.add_command(label="Speichern")
-filemenu.add_command(label="Fertigstellen")
+filemenu.add_command(label="Fertigstellen", command=datenbankEintrag)
+filemenu.add_separator()
+filemenu.add_command(label="Beenden", command=exit)
 
 bausteinemenu = Menu()
 menu.add_cascade(label="Bausteine", menu=bausteinemenu)
 bausteinemenu.add_command(label="Multiple Choice", command=newMultipleChoice)
-bausteinemenu.add_command(label="")
 bausteinemenu.add_separator()
 bausteinemenu.add_command(label="Trennlinie", command=trennlinie)
 
 helpmenu = Menu()
 menu.add_cascade(label="Hilfe", menu=helpmenu)
-helpmenu.add_command(label="Fertigstellen")
-helpmenu.add_command(label="Bausteine")
+helpmenu.add_command(label="Fertigstellen (in Arbeit)")
+helpmenu.add_command(label="Bausteine (in Arbeit)")
+
+
+debugmenu = Menu()
+menu.add_cascade(label="Debuggen", menu=debugmenu)
+debugmenu.add_command(label="Länge Array", command=arrayLänge)
+debugmenu.add_command(label="Datenausgeben", command=arrayAusgeben)
 
 main.mainloop()
