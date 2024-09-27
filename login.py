@@ -8,18 +8,18 @@ import subprocess
 def start():
     global username_entry, password_entry
 
-    username_label = tkinter.Label(login, text="Benutzername: ")
-    username_label.place(x=500, y=40)
-    password_label = tkinter.Label(login, text="Passwort: ")
-    password_label.place(x=500, y=80)
+    username_label = tkinter.Label(login, text="Benutzername", font="arial 12 bold")
+    username_label.place(x=867, y=367)
+    password_label = tkinter.Label(login, text="Passwort", font="arial 12 bold")
+    password_label.place(x=867, y=442)
 
-    username_entry = Entry(login)
-    username_entry.place(x=600, y=40)
-    password_entry = Entry(login, show="*")
-    password_entry.place(x=600, y=80)
+    username_entry = Entry(login, width=20, font="arial 12")
+    username_entry.place(relx=.5, rely=.38,anchor= CENTER)
+    password_entry = Entry(login, show="*", width=20, font="arial 12")
+    password_entry.place(relx=.5, rely=.45,anchor= CENTER)
 
-    login_button = tkinter.Button(login, text="Login", command=loginButton)
-    login_button.place(x=600, y=120)
+    login_button = tkinter.Button(login, text="Login", command=loginButton, font="arial 12 bold", width= 17, bd=4)
+    login_button.place(relx=.5, rely=.5,anchor= CENTER)
     login.bind("<Return>", loginButton)
 
 def loginButton(event=None):
