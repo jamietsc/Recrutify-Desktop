@@ -57,6 +57,7 @@ login = ttk.Window(themename="superhero")
 login.title("Recrutify | Login")
 window_width = 500
 window_height = 500
+login.resizable(False, False)
 login.geometry(f"{window_width}x{window_height}")
 
 # Fenster immer in der Mitte des Bildschirms positionieren
