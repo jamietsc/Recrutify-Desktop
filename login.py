@@ -2,30 +2,17 @@ import tkinter
 import tkinter.dialog
 from tkinter import *
 import sqlite3
-from tkinter import messagebox
+from tkinter import messagebox, Frame, Label
 import subprocess
+import ttkbootstrap as ttk
 
-def start():
-    global username_entry, password_entry
-
-    username_label = tkinter.Label(login, text="Benutzername", font="arial 12 bold")
-    username_label.place(x=867, y=367)
-    password_label = tkinter.Label(login, text="Passwort", font="arial 12 bold")
-    password_label.place(x=867, y=442)
-
-    username_entry = Entry(login, width=20, font="arial 12")
-    username_entry.place(relx=.5, rely=.38,anchor= CENTER)
-    password_entry = Entry(login, show="*", width=20, font="arial 12")
-    password_entry.place(relx=.5, rely=.45,anchor= CENTER)
-
-    login_button = tkinter.Button(login, text="Login", command=loginButton, font="arial 12 bold", width= 17, bd=4)
-    login_button.place(relx=.5, rely=.5,anchor= CENTER)
-    login.bind("<Return>", loginButton)
+def toggle_password():
+    if password_entry.cget('show') == '●':
+        password_entry.config(show='')
+    else:
+        password_entry.config(show='●')
 
 def loginButton(event=None):
-    global versuche
-    versuche = 0
-
     # Verbindung zur SQLite-Datenbank herstellen
     conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
@@ -66,11 +53,57 @@ def loginButton(event=None):
     conn.close()
 
 
-login = Tk()
+login = ttk.Window(themename="superhero")
 login.title("Recrutify | Login")
-login.state('zoomed')
-login.resizable(False, False)
+window_width = 500
+window_height = 500
+login.geometry(f"{window_width}x{window_height}")
 
-start()
+# Fenster immer in der Mitte des Bildschirms positionieren
+screen_width = login.winfo_screenwidth()
+screen_height = login.winfo_screenheight()
+x_coordinate = int((screen_width / 2) - (window_width / 2))
+y_coordinate = int((screen_height / 2) - (window_height / 2))
+login.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+
+# Recrutify Logo
+image = ttk.PhotoImage(file="recrutify.png")
+
+# Titel-Label
+image_label = ttk.Label(login, anchor="center", image=image)
+image_label.pack(pady=20)
+
+# Frame für das Formular erstellen
+form_frame = ttk.Frame(login)
+form_frame.pack(pady=10)
+
+# Benutzername Label und Entry (Label über Entry, beide linksbündig)
+username_label = ttk.Label(form_frame, text="Benutzername", font=("Helvetica", 10, "bold"))
+username_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="w")  # Links ausrichten
+username_entry = ttk.Entry(form_frame, font=("Helvetica", 10), width=40)
+username_entry.grid(row=1, column=0, padx=10, pady=5, sticky="w")  # Links ausrichten mit dem Label
+
+# Passwort Label und Entry (Label über Entry, beide linksbündig)
+password_label = ttk.Label(form_frame, text="Passwort", font=("Helvetica", 10, "bold"))
+password_label.grid(row=2, column=0, padx=10, pady=(15, 0), sticky="w")  # Links ausrichten
+password_entry = ttk.Entry(form_frame, show="●", font=("Helvetica", 10), width=40)
+password_entry.grid(row=3, column=0, padx=10, pady=5, sticky="w")  # Links ausrichten mit dem Label
+
+# Checkbutton für "Passwort anzeigen"
+show_password = ttk.Checkbutton(
+    form_frame,
+    text="Passwort anzeigen",
+    bootstyle="secondary-round-toggle",
+    command=toggle_password
+)
+show_password.grid(row=4, column=0, padx=10, pady=10, sticky="w")  # Links ausrichten
+
+# Login Button
+login_button = ttk.Button(login, text="Login", command=loginButton, width=45, style="primary")
+login_button.pack(pady=20)
+
+# Binde die Enter-Taste, um den Button auszulösen
+login.bind("<Return>", loginButton)
 
 login.mainloop()
