@@ -83,7 +83,7 @@ unternehmen_label.grid(row=0, column=0, padx=10, pady=(5, 0), sticky="w")
 
 unternehmen_entry_var = StringVar()
 unternehmen_entry = ttk.Entry(form_frame, textvariable=unternehmen_entry_var, width=40)
-unternehmen_entry.grid(row=1, column=0, padx=10, pady=5, sticky="w")  # Korrektur: hier ist das Entry in Row 1
+unternehmen_entry.grid(row=1, column=0, padx=10, pady=5, sticky="w")
 
 # Ansprechpartner
 ansprechpartner_label = ttk.Label(form_frame, text="Ansprechpartner", font=("Helvetica", 10, "bold"))
