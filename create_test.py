@@ -1,11 +1,3 @@
-import tkinter
-import tkinter.dialog
-from tkinter import *
-import sqlite3
-from tkinter import messagebox, Frame, Label
-import subprocess
-import ttkbootstrap as ttk
-
 import tkinter as tk
 from tkinter import ttk
 import ttkbootstrap as ttk
@@ -82,11 +74,11 @@ create.title("Recrutify")
 create.state('zoomed')  # Vollbildmodus aktivieren
 create.resizable(False, False)
 
-menu = Menu(create)
+menu = tk.Menu(create)
 create.config(menu=menu)
 
 # Erstellen der Navigationsleiste
-filemenu = tkinter.Menu(menu, tearoff=0)
+filemenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Neue Datei")
 filemenu.add_command(label="Speichern")
@@ -94,14 +86,14 @@ filemenu.add_command(label="Fertigstellen")
 filemenu.add_separator()
 filemenu.add_command(label="Beenden", command=exit)
 
-bausteinemenu = tkinter.Menu(menu, tearoff=0)
+bausteinemenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Fragen hinzufügen", menu=bausteinemenu)
 bausteinemenu.add_command(label="Single Choice", command=MultipleChoice)
 bausteinemenu.add_command(label="Multiple Choice")
 bausteinemenu.add_separator()
 bausteinemenu.add_command(label="Neuer Abschnitt")
 
-helpmenu = tkinter.Menu(menu, tearoff=0)
+helpmenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Hilfe", menu=helpmenu)
 helpmenu.add_command(label="Fertigstellen (in Arbeit)")
 helpmenu.add_command(label="Bausteine (in Arbeit)")
