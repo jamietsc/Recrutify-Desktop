@@ -44,7 +44,7 @@ def loginButton(event=None):
         else:
             # Wenn kein Admin, zur Hauptseite weiterleiten
             login.destroy()
-            subprocess.run(["python", "main.py"])
+            subprocess.run(["python", "create_test.py"])
     else:
         # Falsche Anmeldedaten
         messagebox.showwarning("Fehler", "Falscher Benutzername oder Passwort")
