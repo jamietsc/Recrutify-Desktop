@@ -88,8 +88,7 @@ filemenu.add_command(label="Beenden", command=exit)
 
 bausteinemenu = tk.Menu(menu, tearoff=0)
 menu.add_cascade(label="Fragen hinzufügen", menu=bausteinemenu)
-bausteinemenu.add_command(label="Single Choice", command=MultipleChoice)
-bausteinemenu.add_command(label="Multiple Choice")
+bausteinemenu.add_command(label="Multiple Choice", command=MultipleChoice)
 bausteinemenu.add_separator()
 bausteinemenu.add_command(label="Neuer Abschnitt")
 
