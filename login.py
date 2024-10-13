@@ -14,7 +14,8 @@ def toggle_password():
 
 def loginButton(event=None):
     # Verbindung zur SQLite-Datenbank herstellen
-    conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
+    conn = sqlite3.connect(r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
+  # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
 
     username_user = username_entry.get()
@@ -44,7 +45,7 @@ def loginButton(event=None):
         else:
             # Wenn kein Admin, zur Hauptseite weiterleiten
             login.destroy()
-            subprocess.run(["python", "create_test.py"])
+            subprocess.run(["python", "main.py"])
     else:
         # Falsche Anmeldedaten
         messagebox.showwarning("Fehler", "Falscher Benutzername oder Passwort")

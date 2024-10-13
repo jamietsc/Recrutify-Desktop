@@ -121,12 +121,15 @@ def newMultipleChoice():
     # Update scroll region
     canvas.config(scrollregion=canvas.bbox("all"))
 
+
 def datenbankEintrag():
     global multiple_choice_array
 
-    conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
+    conn = sqlite3.connect(
+        r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
     cursor = conn.cursor()
 
+    # Tabelle MultipleChoiceFragen erstellen
     cursor.execute('''CREATE TABLE IF NOT EXISTS MultipleChoiceFragen(
                         FID INTEGER PRIMARY KEY AUTOINCREMENT,
                         Text TEXT,
@@ -139,15 +142,27 @@ def datenbankEintrag():
                         Richtig_3 BOOLEAN,
                         Richtig_4 BOOLEAN,
                         TID INT,
-                        FOREIGN KEY (TID) REFERENCES Abschnitte(TID)
+                        FOREIGN KEY (TID) REFERENCES Test(TID)
                     )''')
 
-    
+    # Tabelle Test erstellen
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Test(
+                        TID INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Dauer INTEGER,
+                        UID INT,
+                        FOREIGN KEY (UID) REFERENCES Unternehmen(UID)
+                    )''')
+
+    TID = 1
+    UID = 5
+
     # SQL-Befehl für das Einfügen von Daten in die Tabelle MultipleChoiceFragen
     sql = '''INSERT INTO MultipleChoiceFragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig_1, Richtig_2, Richtig_3, Richtig_4, TID) 
              VALUES (?,?,?,?,?,?,?,?,?,?)'''
-    
-    tid = 1  # Du kannst das entsprechend anpassen oder dynamisch setzen
+
+    # SQL-Befehl für das Einfügen von Daten in die Tabelle Test
+    sql1 = '''INSERT INTO Test(TID, Dauer, UID)
+              VALUES(?, ?, ?)'''
 
     for mc in multiple_choice_array:
         try:
@@ -161,8 +176,10 @@ def datenbankEintrag():
                 continue  # Überspringt diesen Datensatz, wenn leere Felder gefunden werden
 
             # Führe den SQL-Befehl aus und füge die Frage und Antworten in die Tabelle ein
-            cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3], 
-                                 selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3], tid))
+            cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3],
+                                 selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3],
+                                 TID))
+            cursor.execute(sql1, (1, 60, 5))
             print("Daten erfolgreich eingefügt")
         except sqlite3.Error as e:
             print(f"Fehler beim Einfügen der Daten: {e}")
@@ -171,6 +188,7 @@ def datenbankEintrag():
     conn.close()
 
     print("Fragen und Antworten wurden in die Datenbank übertragen.")
+
 
 def arrayLänge():
     print(len(multiple_choice_array))

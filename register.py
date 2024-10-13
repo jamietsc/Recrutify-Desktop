@@ -22,7 +22,8 @@ def check_fields():
 
 def registerButton(event=None):
     # Verbindung zur SQLite-Datenbank herstellen
-    conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
+    conn = sqlite3.connect(r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
+  # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
 
     unternehmen = unternehmen_entry_var.get()
