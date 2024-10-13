@@ -1,148 +1,172 @@
 import tkinter
-import tkinter.dialog
 from tkinter import *
 from tkinter import ttk
 import sqlite3
 
 multiple_choice_number = 0
-i = 1
-multiple_choice_array = [[]]
-entry_array = [[]]
-v_list = []
-frage_entry = 0
+multiple_choice_array = []
 
+# GUI-Setup
+main = Tk()
+main.title("Recrutify")
+main.state('zoomed')
+main.resizable(False, False)
 
+# Frame to hold canvas and scrollbar                                         
+frame = Frame(main)
+frame.pack(fill=BOTH, expand=True)
+
+# Create a canvas
+canvas = Canvas(frame)
+canvas.pack(side=LEFT, fill=BOTH, expand=True)
+
+# Add a scrollbar to the canvas
+scrollbar = Scrollbar(frame, command=canvas.yview)
+scrollbar.pack(side=RIGHT, fill=Y)
+
+# Configure canvas scroll command
+canvas.configure(yscrollcommand=scrollbar.set)
+
+# Create a frame inside the canvas to hold the content
+content_frame = Frame(canvas)
+canvas.create_window((0, 0), window=content_frame, anchor="nw")
+
+# Configure canvas scroll region
+canvas.config(scrollregion=canvas.bbox("all"))
 
 def trennlinie():
-    global i
-    seperator = ttk.Separator(main, orient=HORIZONTAL)
-    seperator.place(x=0, y=40 * i, width=1920, height=40)
-    i += 1
+    # Add a separator to content_frame (which is inside the canvas)
+    seperator = ttk.Separator(content_frame, orient=HORIZONTAL)
+    seperator.pack(fill="x", pady=10)
 
 def exit():
     main.destroy()
 
+class MultipleChoice:
+    def __init__(self, master, question_number):
+        self.master = master
+        self.question_number = question_number
+        self.v1 = tkinter.BooleanVar()
+        self.v2 = tkinter.BooleanVar()
+        self.v3 = tkinter.BooleanVar()
+        self.v4 = tkinter.BooleanVar()
+        self.create_question()
+
+    def create_question(self):
+        # Frame to center the question and answers horizontally
+        question_frame = Frame(self.master)
+        question_frame.pack(pady=20)
+
+        # Center the whole frame inside content_frame
+        question_frame.pack(pady=20, anchor="center")
+
+        # Question label and entry (centered)
+        question_label = Label(question_frame, text=f"Frage {self.question_number + 1}:", font=("Helvetica", 10, "bold"))
+        question_label.grid(row=0, column=0, padx=10)
+
+        self.question_entry = Entry(question_frame, width=70)
+        self.question_entry.grid(row=0, column=1, padx=10)
+
+        # Answer options with checkbuttons (centered)
+        self.create_answer_option(question_frame, self.v1, "Antwort 1", 1)
+        self.create_answer_option(question_frame, self.v2, "Antwort 2", 2)
+        self.create_answer_option(question_frame, self.v3, "Antwort 3", 3)
+        self.create_answer_option(question_frame, self.v4, "Antwort 4", 4)
+
+    def create_answer_option(self, frame, var, text, row):
+        # Create checkbutton and entry side by side in the same row
+        answer_checkbutton = Checkbutton(frame, variable=var)
+        answer_checkbutton.grid(row=row, column=0, padx=10)
+
+        answer_entry = Entry(frame, width=70)
+        answer_entry.grid(row=row, column=1, padx=10)
+
+        # Store the entry reference
+        if text == "Antwort 1":
+            self.answer_1_entry = answer_entry
+        elif text == "Antwort 2":
+            self.answer_2_entry = answer_entry
+        elif text == "Antwort 3":
+            self.answer_3_entry = answer_entry
+        elif text == "Antwort 4":
+            self.answer_4_entry = answer_entry
+
+    def get_question_entry(self):
+        return self.question_entry.get()
+    
+    def get_answer_entries(self):
+        return [
+            self.answer_1_entry.get(),
+            self.answer_2_entry.get(),
+            self.answer_3_entry.get(),
+            self.answer_4_entry.get()
+        ]
+    
+    def get_selected_answer(self):
+        return [
+            self.v1.get(),
+            self.v2.get(),
+            self.v3.get(),
+            self.v4.get()
+        ]
+
 def newMultipleChoice():
-    global i, multiple_choice_array, multiple_choice_number, frage_entry, antwort_1_entry, antwort_2_entry, antwort_3_entry, antwort_4_entry
-
-    if(multiple_choice_number > 0):
-        Text = frage_entry.get()
-        frage_entry.config(state=tkinter.DISABLED)
-        Antwort_1 = antwort_1_entry.get()
-        antwort_1_entry.config(state=tkinter.DISABLED)
-        Antwort_2 = antwort_2_entry.get()
-        antwort_2_entry.config(state=tkinter.DISABLED)
-        Antwort_3 = antwort_3_entry.get()
-        antwort_3_entry.config(state=tkinter.DISABLED)
-        Antwort_4 = antwort_4_entry.get()
-        antwort_4_entry.config(state=tkinter.DISABLED)
-
-        # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
-        if v.get() == 1:
-            Richtig = Antwort_1
-        elif v.get() == 2:
-            Richtig = Antwort_2
-        elif v.get() == 3:
-            Richtig = Antwort_3
-        elif v.get() == 4:
-            Richtig = Antwort_4
-        else:
-            Richtig = "Keine Auswahl"
-
-        multiple_choice_array.append([Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig])
-
-
-    # Label und Eingabefeld für die Frage
-    frage_label = tkinter.Label(main, text=f"Frage {multiple_choice_number + 1}:")
-    frage_label.place(x=500, y=40 * i)
-    frage_entry = tkinter.Entry(relief=RIDGE, width=100)
-    frage_entry.place(x=600, y=40 * i)
-    i += 1
-
-    # Radiobutton und Eingabefelder für Antworten
-    antwort_1_radiobutton = tkinter.Radiobutton(main, text="Antwort 1", variable=v, value=1)
-    antwort_1_radiobutton.place(x=500, y=40 * i)
-    antwort_1_entry = tkinter.Entry(relief=RIDGE, width=100)
-    antwort_1_entry.place(x=600, y=40 * i)
-    i += 1
-
-    antwort_2_radiobutton = tkinter.Radiobutton(main, text="Antwort 2", variable=v, value=2)
-    antwort_2_radiobutton.place(x=500, y=40 * i)
-    antwort_2_entry = tkinter.Entry(relief=RIDGE, width=100)
-    antwort_2_entry.place(x=600, y=40 * i)
-    i += 1
-
-    antwort_3_radiobutton = tkinter.Radiobutton(main, text="Antwort 3", variable=v, value=3)
-    antwort_3_radiobutton.place(x=500, y=40 * i)
-    antwort_3_entry = tkinter.Entry(relief=RIDGE, width=100)
-    antwort_3_entry.place(x=600, y=40 * i)
-    i += 1
-
-    antwort_4_radiobutton = tkinter.Radiobutton(main, text="Antwort 4", variable=v, value=4)
-    antwort_4_radiobutton.place(x=500, y=40 * i)
-    antwort_4_entry = tkinter.Entry(relief=RIDGE, width=100)
-    antwort_4_entry.place(x=600, y=40 * i)
-    i += 1
-
+    global multiple_choice_number, multiple_choice_array
+    
+    # Create a new multiple choice question inside content_frame
+    mc = MultipleChoice(content_frame, multiple_choice_number)
+    multiple_choice_array.append(mc)
     multiple_choice_number += 1
 
+    # Update scroll region
+    canvas.config(scrollregion=canvas.bbox("all"))
 
 def datenbankEintrag():
     global multiple_choice_array
 
-    Text = frage_entry.get()
-    Antwort_1 = antwort_1_entry.get()
-    Antwort_2 = antwort_2_entry.get()
-    Antwort_3 = antwort_3_entry.get()
-    Antwort_4 = antwort_4_entry.get()
-
-    # Richtige Antwort basierend auf der Auswahl des Radio-Buttons festlegen
-    if v.get() == 1:
-        Richtig = Antwort_1
-    elif v.get() == 2:
-        Richtig = Antwort_2
-    elif v.get() == 3:
-        Richtig = Antwort_3
-    elif v.get() == 4:
-        Richtig = Antwort_4
-    else:
-        Richtig = "Keine Auswahl"
-
-    multiple_choice_array.append([Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig])
-
-    # Verbindung zur SQLite-Datenbank herstellen
     conn = sqlite3.connect('Recrutify.db')  # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
 
-    # Tabelle "Fragen" erstellen, falls sie noch nicht existiert
-    cursor.execute('''CREATE TABLE IF NOT EXISTS Fragen (
+    cursor.execute('''CREATE TABLE IF NOT EXISTS MultipleChoiceFragen(
                         FID INTEGER PRIMARY KEY AUTOINCREMENT,
                         Text TEXT,
                         Antwort_1 TEXT,
                         Antwort_2 TEXT,
                         Antwort_3 TEXT,
                         Antwort_4 TEXT,
-                        Richtig TEXT,
+                        Richtig_1 BOOLEAN,
+                        Richtig_2 BOOLEAN,
+                        Richtig_3 BOOLEAN,
+                        Richtig_4 BOOLEAN,
                         TID INT,
-                        FOREIGN KEY (TID) REFERENCES Test(TID)
+                        FOREIGN KEY (TID) REFERENCES Abschnitte(TID)
                     )''')
 
-    # SQL-Befehl zum Einfügen der Daten
-    sql = '''INSERT INTO Fragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig, TID) 
-             VALUES (?,?,?,?,?,?,?)'''
-    tid = 1
+    
+    # SQL-Befehl für das Einfügen von Daten in die Tabelle MultipleChoiceFragen
+    sql = '''INSERT INTO MultipleChoiceFragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig_1, Richtig_2, Richtig_3, Richtig_4, TID) 
+             VALUES (?,?,?,?,?,?,?,?,?,?)'''
+    
+    tid = 1  # Du kannst das entsprechend anpassen oder dynamisch setzen
 
-    # Daten in die Datenbank einfügen
-    for i in range(0, len(multiple_choice_array)):
+    for mc in multiple_choice_array:
         try:
-            # Überprüfe, ob die Daten korrekt sind
-            print(f"Füge folgende Daten ein: {multiple_choice_array[i]}")
-            cursor.execute(sql, (multiple_choice_array[i][0], multiple_choice_array[i][1], multiple_choice_array[i][2], multiple_choice_array[i][3], multiple_choice_array[i][4], multiple_choice_array[i][5], tid))
+            question = mc.get_question_entry()
+            answers = mc.get_answer_entries()
+            selected_answers = mc.get_selected_answer()  # Liste der richtigen Antworten (Booleans)
+
+            # Prüfe, ob alle Felder ausgefüllt sind
+            if question.strip() == "" or any(answer.strip() == "" for answer in answers):
+                print(f"Fehler: Eine Frage oder Antwort ist leer.")
+                continue  # Überspringt diesen Datensatz, wenn leere Felder gefunden werden
+
+            # Führe den SQL-Befehl aus und füge die Frage und Antworten in die Tabelle ein
+            cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3], 
+                                 selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3], tid))
             print("Daten erfolgreich eingefügt")
         except sqlite3.Error as e:
             print(f"Fehler beim Einfügen der Daten: {e}")
 
-    # Änderungen speichern und Verbindung schließen
     conn.commit()
     conn.close()
 
@@ -152,28 +176,18 @@ def arrayLänge():
     print(len(multiple_choice_array))
 
 def arrayAusgeben():
-    for i in range(0, len(multiple_choice_array)):
-        print(multiple_choice_array[i][0], multiple_choice_array[i][1], multiple_choice_array[i][2], multiple_choice_array[i][3], multiple_choice_array[i][4], multiple_choice_array[i][5])
+    for mc in multiple_choice_array:
+        print(mc.get_question_entry(), mc.get_answer_entries(), mc.get_selected_answer())
 
+def _on_mouse_wheel(event):
+    canvas.yview_scroll(-1 * int((event.delta / 120)), "units")
 
-# GUI-Setup
-main = Tk()
-main.title("Recrutify")
-main.state('zoomed')
-main.resizable(False, False)
-
-# Variablen müssen nach dem Erstellen des tkinter-Hauptfensters initialisiert werden
-a = IntVar()  # Variable für die Radiobuttons
-b = IntVar()
-c = IntVar()
-d = IntVar()
-multiple_choice_array.clear()
+canvas.bind_all("<MouseWheel>", _on_mouse_wheel)
 
 menu = Menu(main)
 main.config(menu=menu)
 
-# Erstellen der Navigationsleiste
-filemenu = Menu()
+filemenu = Menu(menu)
 menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Neue Datei")
 filemenu.add_command(label="Speichern")
@@ -181,19 +195,18 @@ filemenu.add_command(label="Fertigstellen", command=datenbankEintrag)
 filemenu.add_separator()
 filemenu.add_command(label="Beenden", command=exit)
 
-bausteinemenu = Menu()
+bausteinemenu = Menu(menu)
 menu.add_cascade(label="Bausteine", menu=bausteinemenu)
 bausteinemenu.add_command(label="Single Choice", command=newMultipleChoice)
 bausteinemenu.add_separator()
 bausteinemenu.add_command(label="Trennlinie", command=trennlinie)
 
-helpmenu = Menu()
+helpmenu = Menu(menu)
 menu.add_cascade(label="Hilfe", menu=helpmenu)
 helpmenu.add_command(label="Fertigstellen (in Arbeit)")
 helpmenu.add_command(label="Bausteine (in Arbeit)")
 
-
-debugmenu = Menu()
+debugmenu = Menu(menu)
 menu.add_cascade(label="Debuggen", menu=debugmenu)
 debugmenu.add_command(label="Länge Array", command=arrayLänge)
 debugmenu.add_command(label="Datenausgeben", command=arrayAusgeben)
