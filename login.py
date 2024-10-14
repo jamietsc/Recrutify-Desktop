@@ -14,7 +14,7 @@ def toggle_password():
 
 def loginButton(event=None):
     # Verbindung zur SQLite-Datenbank herstellen
-    conn = sqlite3.connect(r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
+    conn = sqlite3.connect('Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
   # Datenbank öffnen oder erstellen
     cursor = conn.cursor()
 

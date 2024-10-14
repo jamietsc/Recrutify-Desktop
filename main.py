@@ -1,16 +1,19 @@
 import tkinter
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import sqlite3
+import ttkbootstrap as tbk
 
 multiple_choice_number = 0
 multiple_choice_array = []
 
 # GUI-Setup
 main = Tk()
+style = tbk.Style("superhero")
 main.title("Recrutify")
 main.state('zoomed')
 main.resizable(False, False)
+
 
 # Frame to hold canvas and scrollbar                                         
 frame = Frame(main)
@@ -18,7 +21,7 @@ frame.pack(fill=BOTH, expand=True)
 
 # Create a canvas
 canvas = Canvas(frame)
-canvas.pack(side=LEFT, fill=BOTH, expand=True)
+canvas.pack(side=TOP, fill=BOTH, expand=True)
 
 # Add a scrollbar to the canvas
 scrollbar = Scrollbar(frame, command=canvas.yview)
@@ -29,10 +32,17 @@ canvas.configure(yscrollcommand=scrollbar.set)
 
 # Create a frame inside the canvas to hold the content
 content_frame = Frame(canvas)
-canvas.create_window((0, 0), window=content_frame, anchor="nw")
 
-# Configure canvas scroll region
-canvas.config(scrollregion=canvas.bbox("all"))
+# Add a window (content_frame) inside the canvas, anchored at the top center ("n")
+canvas.create_window((canvas.winfo_width() / 2, 0), window=content_frame, anchor="n")
+
+# Update scroll region dynamically when the window size changes
+def update_scroll_region(event):
+    canvas.configure(scrollregion=canvas.bbox("all"))
+    canvas.create_window((canvas.winfo_width() / 2, 0), window=content_frame, anchor="n")
+
+# Bind the window resize event to the update_scroll_region function
+canvas.bind("<Configure>", update_scroll_region)
 
 def trennlinie():
     # Add a separator to content_frame (which is inside the canvas)
@@ -117,16 +127,55 @@ def newMultipleChoice():
     mc = MultipleChoice(content_frame, multiple_choice_number)
     multiple_choice_array.append(mc)
     multiple_choice_number += 1
+    trennlinie()
 
     # Update scroll region
     canvas.config(scrollregion=canvas.bbox("all"))
 
 
+def zeitlimit():
+    global dauer  # Zugriff auf die globale Variable, um die Zeit zu speichern
+    
+    zeit = tbk.Window(themename="superhero")
+    zeit.title("Recrutify | Zeit einstellen")
+    window_width = 300
+    window_height = 150
+    zeit.resizable(False, False)
+    zeit.geometry(f"{window_width}x{window_height}")
+
+    screen_width = zeit.winfo_screenwidth()
+    screen_height = zeit.winfo_screenheight()
+    x_coordinate = int((screen_width / 2) - (window_width / 2))
+    y_coordinate = int((screen_height / 2) - (window_height / 2))
+    zeit.geometry(f"{window_width}x{window_height}+{x_coordinate}+{y_coordinate}")
+
+    zeit_label = Label(zeit, text="Zeit in Minuten:", font=("Helvetica", 10, "bold"))
+    zeit_label.place(x=55, y=55)
+
+    zeit_entry = Entry(zeit, relief=RIDGE, width=10)
+    zeit_entry.place(x=160, y=55)
+
+    def buttonClick():
+        global dauer  # Zeitwert speichern
+        try:
+            dauer = int(zeit_entry.get())  # Die Eingabe wird in ein int konvertiert
+            datenbankEintrag()
+            zeit.destroy()  # Schließt das Fenster nach der Eingabe
+            messagebox.showinfo("Erfolgreich","Eingegebene Zeit: " + str(dauer) + " Minuten")  # Debug-Ausgabe
+        except ValueError:
+            messagebox.showwarning("Fehler","Ungültige Eingabe, bitte eine Zahl eingeben.")  # Falls die Eingabe ungültig ist
+        
+
+    zeit_button = Button(zeit, text="OK", width=15, command=buttonClick)
+    zeit_button.place(x=100, y=85)
+
+    zeit.mainloop()
+
+
 def datenbankEintrag():
     global multiple_choice_array
 
-    conn = sqlite3.connect(
-        r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
+    conn = sqlite3.connect('Recrutify.db')
     cursor = conn.cursor()
 
     # Tabelle MultipleChoiceFragen erstellen
@@ -169,7 +218,7 @@ def datenbankEintrag():
             question = mc.get_question_entry()
             answers = mc.get_answer_entries()
             selected_answers = mc.get_selected_answer()  # Liste der richtigen Antworten (Booleans)
-
+            
             # Prüfe, ob alle Felder ausgefüllt sind
             if question.strip() == "" or any(answer.strip() == "" for answer in answers):
                 print(f"Fehler: Eine Frage oder Antwort ist leer.")
@@ -179,7 +228,7 @@ def datenbankEintrag():
             cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3],
                                  selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3],
                                  TID))
-            cursor.execute(sql1, (1, 60, 5))
+            cursor.execute(sql1, (1, dauer, 5))
             print("Daten erfolgreich eingefügt")
         except sqlite3.Error as e:
             print(f"Fehler beim Einfügen der Daten: {e}")
@@ -209,7 +258,7 @@ filemenu = Menu(menu)
 menu.add_cascade(label="Datei", menu=filemenu)
 filemenu.add_command(label="Neue Datei")
 filemenu.add_command(label="Speichern")
-filemenu.add_command(label="Fertigstellen", command=datenbankEintrag)
+filemenu.add_command(label="Fertigstellen", command=zeitlimit)
 filemenu.add_separator()
 filemenu.add_command(label="Beenden", command=exit)
 
