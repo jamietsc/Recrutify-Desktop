@@ -13,6 +13,7 @@ def toggle_password():
         password_entry.config(show='●')
 
 def loginButton(event=None):
+    global username, password
     # Verbindung zur SQLite-Datenbank herstellen
     conn = sqlite3.connect('Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
   # Datenbank öffnen oder erstellen
@@ -20,7 +21,9 @@ def loginButton(event=None):
 
     username_user = username_entry.get()
     password_user = password_entry.get()
-
+    username = username_user
+    password = password_user
+    
     # Tabelle erstellen (falls noch nicht vorhanden)
     cursor.execute('''CREATE TABLE IF NOT EXISTS Unternehmen (
                         UID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,6 +55,12 @@ def loginButton(event=None):
         password_entry.delete(0, END)
 
     conn.close()
+
+def get_username():
+    print(str(username)) 
+
+def get_password():
+    print(str(password)) 
 
 
 login = ttk.Window(themename="superhero")
