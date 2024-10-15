@@ -4,6 +4,7 @@ from tkinter import ttk, messagebox
 import sqlite3
 import ttkbootstrap as tbk
 
+
 multiple_choice_number = 0
 multiple_choice_array = []
 
@@ -215,7 +216,7 @@ def datenbankEintrag():
     UID = cursor.fetchone()
     if UID is None:
         print("Fehler: Ungültige Login-Daten.")
-        return """
+        return"""
 
     # SQL-Befehl für das Einfügen von Daten in die Tabelle MultipleChoiceFragen
     sql = '''INSERT INTO MultipleChoiceFragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig_1, Richtig_2, Richtig_3, Richtig_4, TID) 
@@ -230,7 +231,7 @@ def datenbankEintrag():
             question = mc.get_question_entry()
             answers = mc.get_answer_entries()
             selected_answers = mc.get_selected_answer()  # Liste der richtigen Antworten (Booleans)
-            
+
             # Prüfe, ob alle Felder ausgefüllt sind
             if question.strip() == "" or any(answer.strip() == "" for answer in answers):
                 print(f"Fehler: Eine Frage oder Antwort ist leer.")
@@ -240,12 +241,12 @@ def datenbankEintrag():
             cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3],
                                  selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3],
                                  TID))
-            cursor.execute(sql1, (TID, dauer, 7))
+            cursor.execute(sql1, (TID, dauer, 3))
             print("Daten erfolgreich eingefügt")
         except sqlite3.Error as e:
             print(f"Fehler beim Einfügen der Daten: {e}")
 
-    
+
 
     conn.commit()
     conn.close()

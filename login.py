@@ -47,7 +47,7 @@ def loginButton(event=None):
             subprocess.run(["python", "register.py"])
         else:
             # Wenn kein Admin, zur Hauptseite weiterleiten
-            #login.destroy()
+            login.destroy()
             subprocess.run(["python", "main.py"])
     else:
         # Falsche Anmeldedaten
