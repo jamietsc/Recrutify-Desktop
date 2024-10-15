@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk, messagebox
 import sqlite3
 import ttkbootstrap as tbk
-import login
 
 multiple_choice_number = 0
 multiple_choice_array = []
@@ -176,7 +175,7 @@ def zeitlimit():
 def datenbankEintrag():
     global multiple_choice_array
 
-    conn = sqlite3.connect('Recrutify.db')
+    conn = sqlite3.connect(r'Z:\BachelorOfScience-Informatik\3. Semester\Software_Engeneering\Recutrify_Desktop_Anwendung\Recrutify\Recrutify.db')
     cursor = conn.cursor()
 
     # Tabelle MultipleChoiceFragen erstellen
@@ -212,11 +211,11 @@ def datenbankEintrag():
     else:
         TID = result[0] + 1  # Erhöhe die TID um 1
     
-    cursor.execute('''SELECT UID FROM Unternehmen WHERE Benutzername = ? AND Passwort = ?''', (login.get_username(), login.get_password()))
+    """cursor.execute('''SELECT UID FROM Unternehmen WHERE Benutzername = ? AND Passwort = ?''', (login.get_username(), login.get_password()))
     UID = cursor.fetchone()
     if UID is None:
         print("Fehler: Ungültige Login-Daten.")
-        return
+        return """
 
     # SQL-Befehl für das Einfügen von Daten in die Tabelle MultipleChoiceFragen
     sql = '''INSERT INTO MultipleChoiceFragen(Text, Antwort_1, Antwort_2, Antwort_3, Antwort_4, Richtig_1, Richtig_2, Richtig_3, Richtig_4, TID) 
@@ -241,7 +240,7 @@ def datenbankEintrag():
             cursor.execute(sql, (question, answers[0], answers[1], answers[2], answers[3],
                                  selected_answers[0], selected_answers[1], selected_answers[2], selected_answers[3],
                                  TID))
-            cursor.execute(sql1, (TID, dauer, UID[0]))
+            cursor.execute(sql1, (TID, dauer, 7))
             print("Daten erfolgreich eingefügt")
         except sqlite3.Error as e:
             print(f"Fehler beim Einfügen der Daten: {e}")
